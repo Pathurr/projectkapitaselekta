@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Nusantara Bio-Hologram | Eksplorasi Satwa Terancam Punah Indonesia</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <!-- Latar Visual Hologram 2D -->
+  <div class="holo-backdrop"></div>
+  <div class="holo-grid"></div>
+  <div class="holo-scanlines"></div>
+
+  <!-- TOP HUD: Navigasi & Progress Bar Eksplorasi -->
+  <header class="top-hud">
+    <div class="hud-brand" onclick="app.goToScene('scene-start')" title="Kembali ke Start Menu">
+      <span class="hud-logo-dot"></span>
+      <div>
+        <div class="hud-title">Nusantara Bio-Hologram</div>
+        <div class="hud-subtitle">ARCHIVE // SATWA TERANCAM PUNAH INDONESIA</div>
+      </div>
+    </div>
+
+    <div class="hud-progress-wrap" title="Progress eksplorasi satwa di Peta Hologram">
+      <div style="width: 100%;">
+        <div class="hud-progress-info">
+          <span>PROGRESS EKSPLORASI SATWA</span>
+          <span id="hudProgressText">0 / 8 Tereksplorasi (0%)</span>
+        </div>
+        <div class="hud-progress-bar-outer">
+          <div class="hud-progress-bar-fill" id="hudProgressBar"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="hud-actions">
+      <button class="btn-holo sm" id="hudSoundToggle" onclick="holoSFX.toggleMute()">🔊 SFX: ON</button>
+      <button class="btn-holo sm" onclick="app.goToScene('scene-start')">🏠 Start Menu</button>
+      <button class="btn-holo sm emerald" onclick="app.goToScene('scene-map')">🗺️ Peta Hologram</button>
+    </div>
+  </header>
+
+  <!-- MAIN CONTAINER (SINGLE PAGE APPLICATION SCENES) -->
+  <main class="scene-wrapper">
+
+    <!-- ====================================================================
+         SCENE 1: START MENU (PANDANGAN PERTAMA)
+         ==================================================================== -->
+    <section id="scene-start" class="scene active">
+      <div class="start-card">
+        <span class="start-badge">✨ Media Edukasi Interaktif Satwa Langka</span>
+        <h1 class="start-title">Jejak Satwa Nusantara yang Terancam Punah</h1>
+        <p class="start-desc">
+          Selamat datang di pusat pemindaian <strong>Bio-Hologram 2D Indonesia</strong>. 
+          Kenali satwa-satwa endemik kebanggaan Indonesia yang kini berada di ambang kepunahan, 
+          pelajari habitat mereka di setiap pulau, dan uji wawasan konservasimu!
+        </p>
+
+        <div class="start-menu-buttons">
+          <button class="btn-holo primary" onclick="app.startExplorationFlow()">
+            🚀 Mulai Eksplorasi (Start)
+          </button>
+          <button class="btn-holo amber" style="padding: 0.85rem 1.6rem; font-size: 1rem;" onclick="app.startRandomKnowledgeTest()">
+            🧠 Tes Ilmu Pengetahuan (10 Quiz Random)
+          </button>
+        </div>
+
+        <div class="start-stats-grid">
+          <div class="stat-box">
+            <div class="stat-num">8</div>
+            <div class="stat-label">Titik Waypoint Satwa</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-num" id="startExploredStat">0 / 8</div>
+            <div class="stat-label">Satwa Tereksplorasi</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-num">10 Soal</div>
+            <div class="stat-label">Mode Tes Acak (Tanpa Timer)</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ====================================================================
+         SCENE 2: PEMBUKAAN / INTRO (SEBELUM MASUK KE PETA HOLOGRAM)
+         ==================================================================== -->
+    <section id="scene-intro" class="scene">
+      <div class="intro-card">
+        <div class="intro-step-indicator" id="introDotsContainer"></div>
+        <div class="intro-subtitle" id="introSubtitle">PENGANTAR KONSERVASI</div>
+        <h2 class="intro-title" id="introTitle">Judul Pembukaan</h2>
+        <p class="intro-text" id="introText">Isi penjelasan pembukaan...</p>
+        <div class="intro-highlight" id="introHighlight">Highlight penting...</div>
+
+        <div class="intro-footer">
+          <button class="btn-holo sm" id="introPrevBtn" onclick="app.prevIntroSlide()">← Sebelumnya</button>
+          <div style="display: flex; gap: 0.65rem;">
+            <button class="btn-holo sm" onclick="app.goToScene('scene-map')">Lewati ke Peta ⏭️</button>
+            <button class="btn-holo primary sm" id="introNextBtn" onclick="app.nextIntroSlide()">Selanjutnya →</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ====================================================================
+         SCENE 3: PETA HOLOGRAM 2D INDONESIA + 8 WAYPOINT SATWA
+         ==================================================================== -->
+    <section id="scene-map" class="scene">
+      <div class="map-header-bar">
+        <div class="map-title-group">
+          <h2>📡 Peta Hologram 2D Nusantara</h2>
+          <p>Klik salah satu titik koordinat (Waypoint) di bawah untuk memindai habitat & informasi satwa.</p>
+        </div>
+        <div style="display: flex; gap: 0.6rem;">
+          <button class="btn-holo sm" onclick="app.goToScene('scene-intro')">📖 Baca Ulang Pembukaan</button>
+          <button class="btn-holo sm amber" onclick="app.startRandomKnowledgeTest()">🧠 Tes 10 Soal Random</button>
+        </div>
+      </div>
+
+      <div class="holo-map-stage" id="holoMapStage">
+        <div class="map-zoom-hud-overlay" id="mapZoomOverlay">
+          <div class="zoom-reticle-box">
+            <span id="mapZoomTargetText">🎯 MEMINDAI KOORDINAT HABITAT...</span>
+          </div>
+        </div>
+        <!-- SVG Peta Hologram 2D Kepulauan Indonesia (Kanvas 1000 x 450) -->
+        <svg class="holo-map-svg" id="holoMapSvg" viewBox="0 0 1000 450" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <pattern id="minorGrid" width="50" height="50" patternUnits="userSpaceOnUse">
+              <path d="M 50 0 L 0 0 0 50" fill="none" stroke="rgba(0, 240, 255, 0.08)" stroke-width="1"/>
+            </pattern>
+          </defs>
+
+          <!-- Background Grid Koordinat Peta -->
+          <rect width="1000" height="450" fill="url(#minorGrid)" />
+          <!-- Garis Khatulistiwa Hologram -->
+          <line x1="0" y1="185" x2="1000" y2="185" stroke="rgba(0, 240, 255, 0.25)" stroke-dasharray="6 6" stroke-width="1" />
+          <text x="16" y="178" fill="rgba(0, 240, 255, 0.45)" font-size="10" font-family="monospace">GARIS KHATULISTIWA 0°</text>
+
+          <!-- Siluet Geometris Hologram Pulau-Pulau Utama Indonesia -->
+          <g id="indonesiaIslands">
+            <!-- Pulau Sumatera -->
+            <polygon class="island-path" points="45,85 85,75 135,125 190,175 235,235 255,295 225,315 180,265 135,215 80,150" />
+            <!-- Pulau Jawa -->
+            <polygon class="island-path" points="250,325 320,330 395,342 440,350 435,368 365,365 295,355 245,345" />
+            <!-- Pulau Kalimantan -->
+            <polygon class="island-path" points="325,145 385,120 455,105 505,135 495,185 510,220 465,255 395,250 335,220 315,180" />
+            <!-- Pulau Sulawesi -->
+            <polygon class="island-path" points="555,145 625,135 635,155 585,170 580,195 620,195 615,215 585,220 605,265 585,275 565,235 550,275 530,265 545,205" />
+            <!-- Bali & Kepulauan Nusa Tenggara -->
+            <polygon class="island-path" points="452,355 475,355 472,368 450,368" />
+            <polygon class="island-path" points="485,358 525,358 522,370 482,370" />
+            <polygon class="island-path" points="535,356 605,355 602,370 532,370" />
+            <polygon class="island-path" points="615,372 665,365 660,382 612,385" />
+            <!-- Kepulauan Maluku -->
+            <polygon class="island-path" points="675,155 705,145 710,185 685,195" />
+            <polygon class="island-path" points="670,225 720,225 718,245 668,245" />
+            <!-- Pulau Papua & Raja Ampat -->
+            <polygon class="island-path" points="755,195 795,175 835,195 895,185 955,205 960,305 905,315 875,275 825,265 795,235 750,220" />
+          </g>
+
+          <!-- Group untuk Waypoints (di-render dinamis oleh js/app.js) -->
+          <g id="mapWaypointsLayer"></g>
+        </svg>
+      </div>
+
+      <!-- Daftar Kartu Cepat 8 Satwa di bawah Peta -->
+      <div class="map-legend-grid" id="mapAnimalCardsGrid"></div>
+    </section>
+
+    <!-- ====================================================================
+         SCENE 4: DETAIL HEWAN (HABITAT SCENERY + KIRI MEDIA + KANAN PARAGRAF & QUIZ)
+         ==================================================================== -->
+    <section id="scene-animal" class="scene">
+      <div class="animal-scene-container" id="animalSceneContainer">
+        <!-- Banner Scenery Habitat -->
+        <div class="habitat-scenery-banner">
+          <div style="display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap;">
+            <button class="btn-holo sm" onclick="app.goToScene('scene-map')">← Kembali ke Peta Hologram</button>
+            <span class="habitat-tag" id="animalHabitatBanner">🏞️ HABITAT SCENERY</span>
+          </div>
+          <span class="status-pill" id="animalExploredBadge">BELUM SELESAI</span>
+        </div>
+
+        <!-- Split Layout: Kiri Foto/Video, Kanan Deskripsi Bertahap & Quiz -->
+        <div class="animal-split-layout">
+          <!-- KIRI: Foto/Video Hewan + Info Singkat -->
+          <aside class="animal-media-panel">
+            <div class="media-frame" id="animalMediaFrame">
+              <!-- Diisi dinamis: gambar/video asli atau placeholder hologram -->
+            </div>
+
+            <div class="animal-meta-list">
+              <div class="meta-row">
+                <span class="meta-label">Wilayah Sebaran</span>
+                <span class="meta-val" id="animalMetaRegion">-</span>
+              </div>
+              <div class="meta-row">
+                <span class="meta-label">Status Konservasi</span>
+                <span class="meta-val" id="animalMetaStatus" style="color: #fde68a;">-</span>
+              </div>
+              <div class="meta-row">
+                <span class="meta-label">Estimasi Populasi</span>
+                <span class="meta-val" id="animalMetaPop">-</span>
+              </div>
+            </div>
+          </aside>
+
+          <!-- KANAN: Deskripsi Paragraf Bertahap (1 Klik = 1 Paragraf) + Mini Quiz -->
+          <div class="animal-story-panel">
+            <div class="story-header">
+              <div>
+                <h2 class="story-animal-title" id="animalTitle">Nama Hewan</h2>
+                <div class="story-animal-latin" id="animalLatin">Nama Latin</div>
+              </div>
+              <span class="paragraph-progress-counter" id="paragraphCounter">Paragraf 1 / 4</span>
+            </div>
+
+            <!-- Tempat Paragraf Muncul Bertahap -->
+            <div class="paragraphs-feed" id="paragraphsFeed"></div>
+
+            <!-- Tombol Lanjut Baca Paragraf -->
+            <div class="story-controls" id="storyControls">
+              <span style="font-size: 0.85rem; color: var(--text-muted);" id="storyHintText">
+                Klik tombol di kanan untuk memunculkan paragraf berikutnya.
+              </span>
+              <button class="btn-holo primary sm" id="nextParagraphBtn" onclick="app.revealNextParagraph()">
+                📖 Lanjut Baca Paragraf Berikutnya →
+              </button>
+            </div>
+
+            <!-- MINI QUIZ (Muncul otomatis setelah seluruh paragraf selesai dibaca) -->
+            <div class="mini-quiz-box" id="animalMiniQuizBox" style="display: none;">
+              <span class="quiz-badge">⚡ MINI QUIZ KONFIRMASI EKSPLORASI</span>
+              <div class="quiz-question-text" id="miniQuizQuestion">Pertanyaan quiz...</div>
+              <div class="quiz-options-list" id="miniQuizOptions"></div>
+
+              <!-- Feedback Jawaban (Salah pun tetap lanjut & menampilkan jawaban benar) -->
+              <div class="quiz-feedback-panel" id="miniQuizFeedback" style="display: none;"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ====================================================================
+         SCENE 5: TES ILMU PENGETAHUAN (10 QUIZ RANDOM DARI START MENU)
+         ==================================================================== -->
+    <section id="scene-test" class="scene">
+      <div class="test-card">
+        <div class="test-top-bar">
+          <div>
+            <div style="font-family: var(--font-mono); font-size: 0.78rem; color: var(--holo-amber);">
+              MODE EVALUASI // TANPA BATAS WAKTU (RESTRIKSI SKOR)
+            </div>
+            <h2 style="font-size: 1.4rem; color: #fff;" id="testHeaderTitle">Tes Ilmu Pengetahuan Satwa</h2>
+          </div>
+          <div style="display: flex; align-items: center; gap: 0.6rem;">
+            <span class="test-score-pill" id="testProgressPill">Soal 1 / 10</span>
+            <span class="test-score-pill" id="testScorePill" style="border-color: var(--holo-emerald); color: #6ee7b7;">Benar: 0</span>
+          </div>
+        </div>
+
+        <!-- Area Soal Aktif -->
+        <div id="testQuestionStage">
+          <span class="quiz-badge" id="testCategoryBadge">Kategori</span>
+          <div class="quiz-question-text" id="testQuestionText">Pertanyaan...</div>
+          <div class="quiz-options-list" id="testOptionsList"></div>
+          <div class="quiz-feedback-panel" id="testFeedbackBox" style="display: none;"></div>
+        </div>
+
+        <!-- Area Hasil Akhir 10 Soal -->
+        <div id="testResultStage" class="test-result-summary" style="display: none;">
+          <span class="start-badge">🎉 Evaluasi Selesai!</span>
+          <h3 style="font-size: 1.6rem; margin-top: 0.5rem;">Skor Akhir Pengetahuanmu</h3>
+          <div class="test-big-score" id="testFinalScoreNumber">0 / 100</div>
+          <p id="testFinalMessage" style="color: var(--text-muted); max-width: 520px; margin: 0 auto 1.75rem;"></p>
+          <div style="display: flex; justify-content: center; gap: 1rem; flex-wrap: wrap;">
+            <button class="btn-holo primary" onclick="app.startRandomKnowledgeTest()">🔄 Coba Lagi (Acak Soal Baru)</button>
+            <button class="btn-holo emerald" onclick="app.goToScene('scene-map')">🗺️ Ke Peta Hologram</button>
+            <button class="btn-holo" onclick="app.goToScene('scene-start')">🏠 Kembali ke Start Menu</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ====================================================================
+       FLOATING DEV / QUICK-JUMP PANEL (PANEL FRONT-END 1-PAGE KE MANA PUN)
+       ==================================================================== -->
+  <div class="dev-quick-panel" id="devQuickPanel">
+    <div class="dev-panel-body">
+      <div class="dev-panel-title">
+        <span>🛠️ Panel Navigasi Cepat (Dev)</span>
+        <button onclick="app.toggleDevPanel()" style="background:none;border:none;color:#fde68a;cursor:pointer;">✕</button>
+      </div>
+      <div style="font-size: 0.74rem; color: var(--text-muted); margin-bottom: 0.5rem;">
+        Gunakan panel ini untuk loncat ke halaman/scene mana pun secara instan saat mengecek perkembangan web.
+      </div>
+
+      <div class="dev-section-label">1. PINDAH SCENE UTAMA</div>
+      <div class="dev-btn-grid">
+        <button class="dev-jump-btn" onclick="app.goToScene('scene-start')">🏠 1. Start Menu</button>
+        <button class="dev-jump-btn" onclick="app.goToScene('scene-intro')">📖 2. Pembukaan</button>
+        <button class="dev-jump-btn" onclick="app.goToScene('scene-map')">🗺️ 3. Peta Hologram</button>
+        <button class="dev-jump-btn" onclick="app.startRandomKnowledgeTest()">🧠 5. Tes 10 Quiz</button>
+      </div>
+
+      <div class="dev-section-label">2. LONCAT KE DETAIL 8 HEWAN</div>
+      <select class="dev-select" id="devAnimalSelect" onchange="if(this.value) app.openAnimalDetail(this.value)">
+        <option value="">-- Pilih Hewan untuk Cek Langsung --</option>
+      </select>
+
+      <div class="dev-section-label">3. SIMULASI PROGRESS BAR</div>
+      <div class="dev-btn-grid">
+        <button class="dev-jump-btn" style="color:#6ee7b7;" onclick="app.devUnlockAllAnimals()">✅ Set 8/8 Selesai</button>
+        <button class="dev-jump-btn" style="color:#fca5a5;" onclick="app.devResetProgress()">🗑️ Reset 0/8</button>
+      </div>
+    </div>
+
+    <button class="dev-toggle-btn" onclick="app.toggleDevPanel()">
+      ⚡ Panel Front-End (Quick Jump)
+    </button>
+  </div>
+
+  <!-- SCRIPTS -->
+  <script src="js/data.js"></script>
+  <script src="js/sfx.js"></script>
+  <script src="js/scenery.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
+
