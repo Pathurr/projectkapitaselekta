@@ -96,3 +96,4 @@ const HOLO_SCENERY = {
     return scenes[animalId] || scenes["harimau-sumatera"];
   }
 };
+
